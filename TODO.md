@@ -2,6 +2,14 @@
 
 Short, actionable ideas to improve the project. Pick one small task at a time and open a PR with a concise description.
 
+## Invite feature (/invite)
+- Requires Firebase env vars set in Vercel (see `.env.sample` and
+  `specs/005-invite-sprint-2-firebase.md`) for persistence to work; the flow
+  degrades gracefully (no crash, just no saving) if they're unset.
+- Firestore security rules live in `firestore.rules` — deploy with
+  `firebase deploy --only firestore:rules` after any change.
+- Resend email notification is stubbed (`src/lib/notifyHugo.ts`) until Sprint 3.
+
 ## Checklist
 - [ ] Create automated build & deploy (CI)
 - [ ] Add unit tests (critical components)

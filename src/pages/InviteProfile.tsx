@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import TopControls from "@/components/TopControls";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useInviteProfile } from "@/hooks/useInviteProfile";
+import { defaultInviteProfile } from "@/config/inviteBaseline";
 import { intentionOptions } from "@/config/inviteIntentions";
 import { dateTypeOptions } from "@/config/inviteDateTypes";
 import { quizQuestions } from "@/config/inviteQuizOptions";
@@ -15,8 +16,17 @@ import { PRIVATE_ANSWER_ID, DateTypeId, InviteProfileConfig, IntentionId } from 
 
 const InviteProfile = () => {
   const { t } = useLanguage();
-  const { profile, saveProfile, resetProfile } = useInviteProfile();
+  const { profile, loading, saveProfile, resetProfile } = useInviteProfile();
   const [draft, setDraft] = useState<InviteProfileConfig>(profile);
+  const [saving, setSaving] = useState(false);
+
+  // Firestore fetch resolves after mount — sync the draft once loading
+  // finishes so the form reflects the persisted profile, not just the
+  // local cache/default it was seeded with.
+  useEffect(() => {
+    if (!loading) setDraft(profile);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const updateBio = <K extends keyof InviteProfileConfig["bio"]>(
     key: K,
@@ -25,14 +35,29 @@ const InviteProfile = () => {
     setDraft((d) => ({ ...d, bio: { ...d.bio, [key]: value } }));
   };
 
-  const handleSave = () => {
-    saveProfile(draft);
-    toast.success(t("invite.profile.saved"));
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await saveProfile(draft);
+      toast.success(t("invite.profile.saved"));
+    } catch {
+      toast.error(t("invite.profile.saveError"));
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleReset = () => {
-    resetProfile();
-    setDraft(profile);
+  const handleReset = async () => {
+    setSaving(true);
+    try {
+      await resetProfile();
+      setDraft(defaultInviteProfile);
+      toast.success(t("invite.profile.saved"));
+    } catch {
+      toast.error(t("invite.profile.saveError"));
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -41,6 +66,7 @@ const InviteProfile = () => {
       <div className="max-w-2xl mx-auto px-4 pt-20 pb-16">
         <h1 className="text-2xl font-bold mb-2">{t("invite.profile.title")}</h1>
         <p className="text-muted-foreground mb-8">{t("invite.profile.subtitle")}</p>
+        {loading && <p className="text-sm text-muted-foreground mb-6">{t("invite.profile.loading")}</p>}
 
         {/* Bio */}
         <section className="mb-10">
@@ -191,11 +217,11 @@ const InviteProfile = () => {
         </section>
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={handleReset}>
+          <Button variant="outline" onClick={handleReset} disabled={saving}>
             {t("invite.profile.reset")}
           </Button>
-          <Button onClick={handleSave} className="flex-1">
-            {t("invite.profile.save")}
+          <Button onClick={handleSave} disabled={saving} className="flex-1">
+            {saving ? t("invite.profile.saving") : t("invite.profile.save")}
           </Button>
         </div>
       </div>

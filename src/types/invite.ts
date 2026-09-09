@@ -1,9 +1,12 @@
 // Data contracts for the /invite flow.
-// Sprint 1 defines these shapes only — no live Firestore/Resend calls happen here.
-// Sprint 2 will persist InviteDocument/QuizAnswersDocument/AvailabilityDocument to
-// Firestore collections named after them (invites, quizAnswers, availability,
-// profileAnswers). Sprint 3 will use InviteDocument + ProfileAnswersDocument to
-// compose the Resend notification email to Hugo.
+// Sprint 2 wires these to Firestore (see src/lib/inviteRepository.ts): every
+// guest submission — identity, intention, quiz answers, date type,
+// availability, compatibility score — lives as one document per invite in
+// the `invites` collection (quiz answers and availability are embedded
+// fields, not separate collections, since they're always read/written
+// together with the rest of the invite). Hugo's editable baseline lives as
+// the single `profileAnswers/hugo` document. Sprint 3 will use InviteDocument
+// + ProfileAnswersDocument to compose the Resend notification email to Hugo.
 
 export type LanguageCode = "EN" | "PT";
 
@@ -110,33 +113,32 @@ export interface InviteFormState {
 }
 
 // ---------------------------------------------------------------------------
-// Firestore collection contracts (Sprint 2 target schema, documented ahead of
-// wiring). Field names double as the Firestore document field names.
+// Firestore collections (Sprint 2 live schema). Field names double as the
+// Firestore document field names.
 // ---------------------------------------------------------------------------
 
-/** Collection: `invites/{inviteId}` */
+export type InviteStatus = "draft" | "submitted" | "contacted" | "archived";
+
+/**
+ * Collection: `invites/{inviteId}`. One document per guest, created as a
+ * "draft" as soon as she finishes the identity step and merge-updated on
+ * every later step so partial progress isn't lost; flipped to "submitted"
+ * on the final confirmation. Every field except `id`/`status`/timestamps is
+ * optional so a partial draft is a valid document.
+ */
 export interface InviteDocument {
   id: string;
-  identity: IdentityInfo;
-  intention: IntentionId;
-  dateType: DateTypeSelection;
-  compatibilityScore: number;
+  identity?: IdentityInfo;
+  intention?: IntentionId;
+  quizAnswers?: QuizAnswers;
+  dateType?: DateTypeSelection;
+  availability?: AvailabilityInfo;
+  compatibilityScore?: number;
   language: LanguageCode;
-  createdAt: string; // ISO timestamp
-  status: "submitted" | "contacted" | "archived";
-}
-
-/** Collection: `quizAnswers/{inviteId}` */
-export interface QuizAnswersDocument {
-  inviteId: string;
-  answers: QuizAnswers;
-  createdAt: string;
-}
-
-/** Collection: `availability/{inviteId}` */
-export interface AvailabilityDocument extends AvailabilityInfo {
-  inviteId: string;
-  createdAt: string;
+  status: InviteStatus;
+  createdAt: string; // ISO timestamp (or Firestore server timestamp on write)
+  updatedAt: string;
+  submittedAt?: string;
 }
 
 /** Collection: `profileAnswers/hugo` — singleton doc holding Hugo's editable baseline. */

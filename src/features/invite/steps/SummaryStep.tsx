@@ -21,7 +21,7 @@ function SummarySection({ title, children }: { title: string; children: ReactNod
 
 export function SummaryStep() {
   const { t } = useLanguage();
-  const { form, submit, submitted } = useInviteWizard();
+  const { form, submit, submitted, submitting, submitError } = useInviteWizard();
   const { profile } = useInviteProfile();
 
   const compatibility = useMemo(
@@ -133,8 +133,12 @@ export function SummaryStep() {
 
       <p className="text-xs text-muted-foreground mb-6">{t("invite.summary.disclaimer")}</p>
 
-      <Button onClick={submit} className="w-full">
-        {t("invite.summary.cta")}
+      {submitError && (
+        <p className="text-sm text-destructive mb-4">{t("invite.summary.submitError")}</p>
+      )}
+
+      <Button onClick={() => submit(compatibility.score)} disabled={submitting} className="w-full">
+        {submitting ? t("invite.summary.sending") : t("invite.summary.cta")}
       </Button>
     </div>
   );

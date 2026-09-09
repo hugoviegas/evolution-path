@@ -610,6 +610,11 @@ Paralelamente, um desafio prático do restaurante onde trabalhava levou à const
     PT: "Suas respostas são usadas só pra planejar esse encontro e não vão pra mais lugar nenhum.",
   },
   "invite.summary.cta": { EN: "Send my answers to Hugo", PT: "Enviar minhas respostas pro Hugo" },
+  "invite.summary.sending": { EN: "Sending...", PT: "Enviando..." },
+  "invite.summary.submitError": {
+    EN: "Something went wrong sending your answers. Please try again in a moment.",
+    PT: "Algo deu errado ao enviar suas respostas. Tenta de novo daqui a pouco.",
+  },
   "invite.summary.confirmedTitle": { EN: "Sent! 🎉", PT: "Enviado! 🎉" },
   "invite.summary.confirmedBody": {
     EN: "Hugo will reach out on Instagram or by the contact you shared to lock in the details.",
@@ -634,8 +639,14 @@ Paralelamente, um desafio prático do restaurante onde trabalhava levou à const
   },
   "invite.profile.baseline.intentionLabel": { EN: "Your intention", PT: "Sua intenção" },
   "invite.profile.dateDefaults.title": { EN: "Default date-type suggestions", PT: "Sugestões padrão de encontro" },
+  "invite.profile.loading": { EN: "Loading your saved profile...", PT: "Carregando seu perfil salvo..." },
   "invite.profile.save": { EN: "Save changes", PT: "Salvar alterações" },
+  "invite.profile.saving": { EN: "Saving...", PT: "Salvando..." },
   "invite.profile.saved": { EN: "Saved!", PT: "Salvo!" },
+  "invite.profile.saveError": {
+    EN: "Couldn't save to the server, but your changes are kept in this browser. Try again in a moment.",
+    PT: "Não deu pra salvar no servidor, mas suas alterações ficaram guardadas nesse navegador. Tenta de novo daqui a pouco.",
+  },
   "invite.profile.reset": { EN: "Reset to defaults", PT: "Restaurar padrão" },
   "invite.profile.langTabLabel": { EN: "Editing text in", PT: "Editando texto em" },
 };
