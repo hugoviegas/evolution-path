@@ -120,6 +120,14 @@ export interface InviteFormState {
 export type InviteStatus = "draft" | "submitted" | "contacted" | "archived";
 
 /**
+ * Sprint 3: set by the `/api/send-invite-email` serverless function, never
+ * by the client. "skipped_duplicate" means the abuse guard found another
+ * submission with the same Instagram handle within the dedupe window and
+ * intentionally didn't send anything.
+ */
+export type EmailStatus = "pending" | "sent" | "failed" | "skipped_duplicate";
+
+/**
  * Collection: `invites/{inviteId}`. One document per guest, created as a
  * "draft" as soon as she finishes the identity step and merge-updated on
  * every later step so partial progress isn't lost; flipped to "submitted"
@@ -139,6 +147,8 @@ export interface InviteDocument {
   createdAt: string; // ISO timestamp (or Firestore server timestamp on write)
   updatedAt: string;
   submittedAt?: string;
+  emailStatus?: EmailStatus;
+  emailSentAt?: string;
 }
 
 /** Collection: `profileAnswers/hugo` — singleton doc holding Hugo's editable baseline. */

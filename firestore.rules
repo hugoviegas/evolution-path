@@ -4,6 +4,12 @@ rules_version = '2';
 // yet, so these are intentionally open where the app needs them to be, with
 // TODOs marking what tightens once auth ships (tracked in
 // specs/005-invite-sprint-2-firebase.md).
+//
+// These rules only govern the client-side Firestore SDK used by the browser.
+// api/send-invite-email.ts (Sprint 3) uses the Firebase Admin SDK with a
+// service account, which bypasses these rules entirely — that's why the
+// email-sending abuse guard and idempotency check live in that function
+// instead of here.
 service cloud.firestore {
   match /databases/{database}/documents {
 

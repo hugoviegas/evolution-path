@@ -649,6 +649,44 @@ Paralelamente, um desafio prático do restaurante onde trabalhava levou à const
   },
   "invite.profile.reset": { EN: "Reset to defaults", PT: "Restaurar padrão" },
   "invite.profile.langTabLabel": { EN: "Editing text in", PT: "Editando texto em" },
+
+  // Invite notification emails (Sprint 3) — rendered server-side by
+  // api/_lib/emailTemplates.ts via getTranslation, never through the React
+  // useLanguage() hook. {name} is replaced with the guest's first name.
+  "email.hugo.subject": {
+    EN: "New invite response from {name}",
+    PT: "Nova resposta do convite de {name}",
+  },
+  "email.hugo.greeting": { EN: "Hey Hugo,", PT: "E aí, Hugo," },
+  "email.hugo.intro": {
+    EN: "{name} just finished the invite. Here's what she shared:",
+    PT: "{name} acabou de terminar o convite. Aqui está o que ela compartilhou:",
+  },
+  "email.hugo.fields.identity": { EN: "Name & Instagram", PT: "Nome & Instagram" },
+  "email.hugo.fields.intention": { EN: "Intention", PT: "Intenção" },
+  "email.hugo.fields.dateType": { EN: "Date type", PT: "Tipo de encontro" },
+  "email.hugo.fields.compatibility": { EN: "Compatibility", PT: "Compatibilidade" },
+  "email.hugo.fields.whoDecides": { EN: "Who decides", PT: "Quem decide" },
+  "email.hugo.fields.availability": { EN: "Availability", PT: "Disponibilidade" },
+  "email.hugo.fields.note": { EN: "Note", PT: "Observação" },
+  "email.hugo.cta": {
+    EN: "Reply to this email or message her on Instagram to confirm the date.",
+    PT: "Responde esse email ou chama ela no Instagram pra confirmar o encontro.",
+  },
+  "email.hugo.signature": {
+    EN: "Sent automatically from hugoviegas.dev/invite",
+    PT: "Enviado automaticamente por hugoviegas.dev/invite",
+  },
+  "email.guest.subject": {
+    EN: "Got it — thanks for the invite answers!",
+    PT: "Recebi — obrigado pelas respostas do convite!",
+  },
+  "email.guest.greeting": { EN: "Hey {name},", PT: "Oi, {name}," },
+  "email.guest.body": {
+    EN: "Your answers just landed safely. Hugo will reach out on Instagram or by the contact you shared to lock in the details.",
+    PT: "Suas respostas chegaram direitinho. O Hugo vai chamar no Instagram ou pelo contato que você passou pra combinar os detalhes.",
+  },
+  "email.guest.signature": { EN: "Talk soon,\nHugo", PT: "Até já,\nHugo" },
 };
 
 export const getTranslation = (key: string, language: LanguageCode): string => {

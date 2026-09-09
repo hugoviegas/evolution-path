@@ -44,18 +44,30 @@ sprint currently in progress lives at
 
 ## Sprint 3 — Resend integration, end-to-end flow, polish
 
-**Status**: Not started. `src/lib/notifyHugo.ts` is stubbed and already
-called from the submit path, ready for this sprint to fill in.
+**Status**: Delivered. Detailed spec:
+[`specs/006-invite-sprint-3-resend.md`](../006-invite-sprint-3-resend/spec.md).
 
-- On successful invite submission, trigger a Resend email to Hugo summarizing
-  the guest's answers and compatibility score.
-- Add guest-facing confirmation email (optional, only if an email address was
-  provided).
-- Error handling for failed sends (retry affordance, friendly error copy in
-  EN/PT) — Firestore write error handling already shipped in Sprint 2.
-- Logging/observability for submission failures.
-- Final pass on tests (unit + integration) and UX polish based on Sprint 1/2
-  feedback.
+- New Vercel serverless function `api/send-invite-email.ts`: reads the
+  invite via Firebase Admin, sends Hugo a summary email and (when provided)
+  a guest confirmation email via Resend, in the invite's stored language.
+- `api/_lib/emailTemplates.ts`: pure EN/PT template builders reusing the
+  same copy/labels already defined for the `/invite` UI
+  (`config/translations.ts`, `inviteIntentions.ts`, `inviteDateTypes.ts`).
+- `api/_lib/emailGuards.ts`: idempotency (`emailStatus === "sent"` never
+  resends) and a same-Instagram-handle duplicate-submission guard, both
+  pure and unit-tested.
+- One retry on transient send failures; on genuine failure the invite is
+  marked `emailStatus: "failed"` and logged server-side, but the guest still
+  sees her normal confirmation screen — a delivery problem never looks like
+  a broken flow to her.
+- `src/lib/notifyHugo.ts` (stubbed in Sprint 2) now fires the real
+  `fetch("/api/send-invite-email")` call — no change needed at the
+  `InviteWizardContext.submit()` call site.
+- `vercel.json` updated so its SPA rewrite no longer swallows `/api/*`
+  requests.
+- Manual, not automated: Resend account/domain verification (SPF/DKIM DNS
+  records) and generating the Firebase Admin service account key — both
+  documented as steps for Hugo in `.env.sample` and the spec.
 
 ## Sprint 4 — Styling & design-system polish
 

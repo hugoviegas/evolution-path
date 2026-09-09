@@ -8,7 +8,13 @@ Short, actionable ideas to improve the project. Pick one small task at a time an
   degrades gracefully (no crash, just no saving) if they're unset.
 - Firestore security rules live in `firestore.rules` — deploy with
   `firebase deploy --only firestore:rules` after any change.
-- Resend email notification is stubbed (`src/lib/notifyHugo.ts`) until Sprint 3.
+- Email delivery is now live: on invite submission, `/api/send-invite-email`
+  sends Hugo a notification and the guest a confirmation (if she gave an
+  email), via Resend. Requires `RESEND_API_KEY`, `INVITE_NOTIFY_EMAIL`,
+  `INVITE_FROM_EMAIL`, and the `FIREBASE_ADMIN_*` service account vars in
+  Vercel — see `.env.sample` and `specs/006-invite-sprint-3-resend.md`.
+- Resend needs a verified sending domain (manual step in the Resend
+  dashboard + DNS records) before `INVITE_FROM_EMAIL` can actually deliver.
 
 ## Checklist
 - [ ] Create automated build & deploy (CI)
