@@ -1,0 +1,44 @@
+rules_version = '2';
+
+// Security rules for the /invite feature (Sprint 2). No Firebase Auth exists
+// yet, so these are intentionally open where the app needs them to be, with
+// TODOs marking what tightens once auth ships (tracked in
+// specs/005-invite-sprint-2-firebase.md).
+//
+// These rules only govern the client-side Firestore SDK used by the browser.
+// api/send-invite-email.ts (Sprint 3) uses the Firebase Admin SDK with a
+// service account, which bypasses these rules entirely — that's why the
+// email-sending abuse guard and idempotency check live in that function
+// instead of here.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // One document per guest invite, created client-side with a random UUID
+    // as the doc id. Anyone can create/update (needed because guests aren't
+    // authenticated), but nobody can read, list, or delete — a guest's own
+    // answers should never be readable by another guest, and only Hugo
+    // (via the Firebase console, or an authenticated admin view added
+    // later) can see submissions.
+    // TODO(Sprint 3+): move writes behind a Cloud Function / add App Check
+    // or rate limiting once this is live and getting real traffic.
+    match /invites/{inviteId} {
+      allow create, update: if true;
+      allow read, list, delete: if false;
+    }
+
+    // Hugo's editable bio/baseline/date-defaults. Publicly readable because
+    // /invite needs it to render for anonymous guests. Writes are also open
+    // for now since /invite/profile has no auth gate — it's protected only
+    // by not being linked anywhere. TODO(Sprint 2.x): once Firebase Auth is
+    // added, restrict writes to Hugo's authenticated uid.
+    match /profileAnswers/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
