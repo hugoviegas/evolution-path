@@ -1,4 +1,10 @@
 
+> **Note**: The `/invite` feature's multi-sprint roadmap (Sprint 1 UX/data
+> model, Sprint 2 Firebase/Firestore, Sprint 3 Resend) is tracked separately
+> in [`sprint-roadmap.md`](./sprint-roadmap.md) so it isn't lost between
+> sessions. The detailed Sprint 1 spec is at
+> `specs/004-invite-sprint-1/spec.md`.
+
 # Implementation Plan: [FEATURE]
 
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]

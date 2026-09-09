@@ -17,6 +17,8 @@ import PropostaEtal from "./pages/PropostaEtal";
 import PresenteX from "./pages/PresenteX";
 import PresenteXAdmin from "./pages/PresenteXAdmin";
 import PresenteXRecompensas from "./pages/PresenteXRecompensas";
+import Invite from "./pages/Invite";
+import InviteProfile from "./pages/InviteProfile";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +59,10 @@ const App = () => {
                   path="/presente-x/recompensas"
                   element={<PresenteXRecompensas />}
                 />
+
+                {/* Invite flow — direct URL only, no menu link yet */}
+                <Route path="/invite" element={<Invite />} />
+                <Route path="/invite/profile" element={<InviteProfile />} />
 
                 {/* ADD ALL OTHER CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
